@@ -45,3 +45,13 @@ int salinity()
     digitalWrite(salinity_trigger, LOW);
     return x;
 }
+
+void openDIForSeconds(float seconds)
+{
+
+}
+
+void openSaltForSeconds(float seconds)
+{
+
+}
