@@ -26,6 +26,12 @@ void loop()
     // if salinity is below LHL OR above RHL, correct it
     int salinity = salinity();
 
+    if (salinity < LHL) {
+
+    } else if (salinity > RHL) {
+
+    }
+
 }
 
 
