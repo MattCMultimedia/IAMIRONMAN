@@ -17,6 +17,7 @@
 // %wt of the salt in the salty container
 #define PWT_SALT = 0.25
 
+
 // lcd
 LiquidCrystal lcd(2, 3, 4, 5, 6, 7, 10);
 
@@ -39,7 +40,8 @@ void setup()
 
 void loop()
 {
-    static unsigned double salinity;
+    static double salinity;
+    static double target;
     // for the main loop
     // we want to check the salinity
     // if salinity is below LHL OR above RHL, correct it
@@ -51,12 +53,25 @@ void loop()
 
         delay(UPSET_DELAY);
         salinity = analogToSalinity(getSalinity());
+
+
         // salinity is in %wt
         if (salinity < LHL) {
             // needs salt
-            openSaltForSeconds(getSecondsForSalinityAndSetpoint(salinity, target));
+
+            // calulate target using gain
+            target = (salinity + (salinity-SETPOINT)*GAIN);
+
+            openSaltForSeconds(getSaltSecondsForSalinityAndSetpoint(salinity, target));
+
         } else if (salinity > RHL) {
-            openDIForSeconds(getSecondsForSalinityAndSetpoint(salinity, target));
+            // needs DI water
+
+            // calc target
+            target = (salinity - (salinity-SETPOINT)*GAIN);
+
+            openDIForSeconds(getDISecondsForSalinityAndSetpoint(salinity, target));
+
         } else {
             // eh. whatver, it fixed itself I guess.
         }
@@ -70,7 +85,7 @@ void loop()
 
 
 
-float getSalinity()
+double getSalinity()
 {
     // averages salinity over course of 2 seconds.
     float x = 0;
@@ -83,7 +98,7 @@ float getSalinity()
         digitalWrite(salinity_trigger, LOW);
         delay(100);
     }
-    return x/samples;
+    return (double)(x/samples);
 }
 
 void openDIForSeconds(float seconds)
@@ -108,4 +123,13 @@ float salinityToAnalog(float s)
 float analogToSalinity(float a)
 {
     return 0.7419333138 * log(a) - 3.6131359758;
+}
+
+float getSaltSecondsForSalinityAndSetpoint(double salinity, double target)
+{
+    // using equation developed in HW #7
+}
+float getDISecondsForSalinityAndSetpoint(double salinity, double target)
+{
+    // using equation developed in HW #7
 }
