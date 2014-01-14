@@ -39,29 +39,30 @@ void setup()
 
 void loop()
 {
-
-    static unsigned long upsetAt = 0;
-    static bool isUpset = false;
+    static unsigned double salinity;
     // for the main loop
     // we want to check the salinity
     // if salinity is below LHL OR above RHL, correct it
 
-    unsigned double salinity = analogToSalinity(getSalinity());
+    salinity = analogToSalinity(getSalinity());
     // Serial.println(salinity);
 
     if (salinity < LHL || salinity > RHL) {
-        isUpset = true;
-        // start a timer
-        upsetAt = millis();
 
-        if (millis() - upsetAt > UPSET_DELAY) {
-            // open the valve for the right amount of time
-
+        delay(UPSET_DELAY);
+        salinity = analogToSalinity(getSalinity());
+        // salinity is in %wt
+        if (salinity < LHL) {
+            // needs salt
+            openSaltForSeconds(getSecondsForSalinityAndSetpoint(salinity, target));
+        } else if (salinity > RHL) {
+            openDIForSeconds(getSecondsForSalinityAndSetpoint(salinity, target));
+        } else {
+            // eh. whatver, it fixed itself I guess.
         }
 
     } else {
-        // reset the timer if
-        isUpset = false;
+
     }
 
 }
@@ -81,14 +82,14 @@ int getSalinity()
 void openDIForSeconds(float seconds)
 {
     digitalWrite(sdi, HIGH);
-    delay(2000);
+    delay(seconds*1000);
     digitalWrite(sdi, LOW);
 }
 
 void openSaltForSeconds(float seconds)
 {
     digitalWrite(ss, HIGH);
-    delay(2000);
+    delay(seconds*1000);
     digitalWrite(ss, LOW);
 }
 
