@@ -11,6 +11,9 @@
 // Gain
 #define GAIN 0.8
 
+// delay after upset in ms
+#define UPSET_DELAY 20000
+
 // %wt of the salt in the salty container
 #define PWT_SALT = 0.25
 
@@ -36,6 +39,9 @@ void setup()
 
 void loop()
 {
+
+    static unsigned long upsetAt;
+    static bool isUpset = false;
     // for the main loop
     // we want to check the salinity
     // if salinity is below LHL OR above RHL, correct it
@@ -43,11 +49,20 @@ void loop()
     // int salinity = getSalinity();
     // Serial.println(salinity);
 
-    // if (salinity < LHL) {
+    if (isUpset && (salinity < LHL || salinity > RHL)) {
+        isUpset = true;
+        // start a timer
+        upsetAt = millis();
 
-    // } else if (salinity > RHL) {
+        if (millis() - upsetAt > UPSET_DELAY) {
+            // open the valve for the right amount of time
 
-    // }
+        }
+
+    } else {
+        // reset the timer if
+        isUpset = false;
+    }
 
 }
 
