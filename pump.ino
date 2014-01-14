@@ -46,7 +46,7 @@ void loop()
     // we want to check the salinity
     // if salinity is below LHL OR above RHL, correct it
 
-    // int salinity = getSalinity();
+    unsigned int salinity = getSalinity();
     // Serial.println(salinity);
 
     if (isUpset && (salinity < LHL || salinity > RHL)) {
@@ -99,5 +99,5 @@ float salinityToAnalog(float s)
 
 float analogToSalinity(float a)
 {
-    return 0.7419333138* log(a) - 3.6131359758
+    return 0.7419333138* log(a) - 3.6131359758;
 }
