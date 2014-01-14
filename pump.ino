@@ -22,7 +22,7 @@ LiquidCrystal lcd(2, 3, 4, 5, 6, 7, 10);
 
 // pin that powers salinity sensor
 int salinity_trigger = 11;
-// analog pin that measures voltage drop over 10kO resistor
+// analog pin that measures voltage drop over 10kOhm resistor
 int salinity_pin = A0;
 
 // soleniod salt
@@ -40,16 +40,16 @@ void setup()
 void loop()
 {
 
-    static unsigned long upsetAt;
+    static unsigned long upsetAt = 0;
     static bool isUpset = false;
     // for the main loop
     // we want to check the salinity
     // if salinity is below LHL OR above RHL, correct it
 
-    unsigned int salinity = getSalinity();
+    unsigned double salinity = analogToSalinity(getSalinity());
     // Serial.println(salinity);
 
-    if (isUpset && (salinity < LHL || salinity > RHL)) {
+    if (salinity < LHL || salinity > RHL) {
         isUpset = true;
         // start a timer
         upsetAt = millis();
@@ -99,5 +99,5 @@ float salinityToAnalog(float s)
 
 float analogToSalinity(float a)
 {
-    return 0.7419333138* log(a) - 3.6131359758;
+    return 0.7419333138 * log(a) - 3.6131359758;
 }
