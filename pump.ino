@@ -70,13 +70,20 @@ void loop()
 
 
 
-int getSalinity()
+float getSalinity()
 {
-    digitalWrite(salinity_trigger, HIGH);
-    delay(100);
-    int x = analogRead(salinity_pin);
-    digitalWrite(salinity_trigger, LOW);
-    return x;
+    // averages salinity over course of 2 seconds.
+    float x = 0;
+    int samples = 10;
+
+    for(int i=0; i<samples; i++){
+        digitalWrite(salinity_trigger, HIGH);
+        delay(100);
+        x += analogRead(salinity_pin);
+        digitalWrite(salinity_trigger, LOW);
+        delay(100);
+    }
+    return x/samples;
 }
 
 void openDIForSeconds(float seconds)
