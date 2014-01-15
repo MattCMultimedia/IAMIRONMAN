@@ -8,7 +8,7 @@ float LHL = SETPOINT-STD_ERR;
 float RHL = SETPOINT+STD_ERR;
 
 // Gain
-#define GAIN 0.8
+#define GAIN 0.9
 // delay after upset in ms
 #define UPSET_DELAY 20000
 // %wt of the salt in the salty container
@@ -45,6 +45,13 @@ void setup()
     pinMode(salinity_pin, INPUT);
     pinMode(ss, OUTPUT);
     pinMode(sdi, OUTPUT);
+    pinMode(2, OUTPUT);
+    pinMode(3, OUTPUT);
+    pinMode(4, OUTPUT);
+    pinMode(5, OUTPUT);
+    pinMode(6, OUTPUT);
+    pinMode(7, OUTPUT);
+    pinMode(10, OUTPUT);
 
     lcd.begin(20, 4);
     Serial.begin(115200);
@@ -221,7 +228,7 @@ void initLCD()
 
 void updateLCD()
 {
-    delay(100);
+    delay(500);
     // salty valve state
     lcd.setCursor(1,2);
     lcd.print("   ");
@@ -240,5 +247,5 @@ void updateLCD()
     lcd.print("   ");
     lcd.setCursor(15,2);
     lcd.print(diState?"ON":"OFF");
-    delay(100);
+    delay(500);
 }
