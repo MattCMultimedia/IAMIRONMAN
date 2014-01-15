@@ -19,6 +19,9 @@ float FLOW_RATE_S = 0.4266;
 #define OFR 0.15
 #define MASS 0.073303037714
 
+#define SALT_SALINITY 0.01
+#define DI_SALINITY 0
+
 // lcd
 LiquidCrystal lcd(2, 3, 4, 5, 6, 7, 10);
 
@@ -180,14 +183,14 @@ float analogToSalinity(float a)
 float getSaltSecondsForSetpoint(double target)
 {
     // using equation developed in HW #7
-    float m_needed = ((target-salinity)*MASS)/((1.0-OFR)*salinity);
+    float m_needed = ((salinity-target)*MASS)/((OFR-1.0)*(SALT_SALINITY-salinity));
     return (60.0 * (m_needed/FLOW_RATE_S));
 }
 float getDISecondsForSetpoint(double target)
 {
     // using equation developed in HW #7
     // returns seconds
-    float m_needed = ((salinity-target)*MASS)/((1.0-OFR)*salinity);
+    float m_needed = ((salinity-target)*MASS)/((OFR-1.0)*(DI_SALINITY-salinity));
     return 60.0 * (m_needed/FLOW_RATE_DI);
 }
 
@@ -221,24 +224,20 @@ void initLCD()
 
 void updateLCD()
 {
-    // Serial.println("UPDATING salty state HERE");
     // salty valve state
     lcd.setCursor(1,2);
     lcd.print(saltyState?"ON ":"OFF");
 
     delay(1000);
 
-    // Serial.println("UPDATE salinity");
     // current salinity
     lcd.setCursor(7,2);
     lcd.print(salinity, 3);
 
     delay(1000);
 
-    // Serial.println("UPDATE diState");
     // DI state
     lcd.setCursor(15,2);
     lcd.print(diState?"ON ":"OFF");
     delay(500);
-    // Serial.println("FINISHED UPDATING LCD");
 }
