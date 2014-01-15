@@ -1,7 +1,11 @@
 #include <SoftwareSerial.h>
 #include <LiquidCrystal.h>
 
+<<<<<<< HEAD
 // SETPOINT + LHL AND RHL in %wt
+=======
+// SETPOINT + LHL AND RHL
+>>>>>>> lastnight
 float SETPOINT = 0.09;
 float STD_ERR = 0.011;
 float LHL = SETPOINT-STD_ERR;
@@ -10,7 +14,7 @@ float RHL = SETPOINT+STD_ERR;
 // Gain
 #define GAIN 0.9
 // delay after upset in ms
-#define UPSET_DELAY 20000
+#define UPSET_DELAY 10000
 // %wt of the salt in the salty container
 #define PWT_SALT = 0.25
 // flow rate in liters per second
@@ -28,6 +32,8 @@ int DI_SALINITY = 0;
 LiquidCrystal lcd(2, 3, 4, 5, 6, 7, 10);
 // arduino-arduino communication on pins 11,12
 // SoftwareSerial ironman(A5,A5);
+
+SoftwareSerial ironman(A5, A4);
 
 // pin that powers salinity sensor
 int salinity_trigger = 11;
@@ -53,14 +59,12 @@ void setup()
     pinMode(ss, OUTPUT);
     pinMode(sdi, OUTPUT);
 
-    pinMode(A5, OUTPUT);
-    pinMode(A4, OUTPUT);
 
     lcd.begin(20, 4);
     Serial.begin(115200);
+    Serial.println("INIT");
 
-    // ironman.begin(4800);
-
+    ironman.begin(9600);
 
     initLCD();
 
@@ -198,7 +202,10 @@ float analogToSalinity(float a)
 float getSaltSecondsForSetpoint(double target)
 {
     // using equation developed in HW #7
-    float m_needed = ((salinity-target)*MASS)/((OFR-1.0)*(SALT_SALINITY-salinity));
+    float m_needed = ((salinity-target)*MASS)/((OFR-1.0)*(1.0-salinity));
+    Serial.print("M_NEEDED: ");
+    Serial.println(m_needed, 4);
+
     return (60.0 * (m_needed/FLOW_RATE_S));
 }
 float getDISecondsForSetpoint(double target)
@@ -256,5 +263,5 @@ void updateLCD()
 
 void arcReactor()
 {
-    // ironman.println("arc");
+    ironman.print("arc");
 }
