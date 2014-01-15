@@ -2,7 +2,7 @@
 #include <LiquidCrystal.h>
 
 // SETPOINT + LHL AND RHL
-float SETPOINT = 0.125;
+float SETPOINT = 0.09;
 float STD_ERR = 0.011;
 float LHL = SETPOINT-STD_ERR;
 float RHL = SETPOINT+STD_ERR;
@@ -10,7 +10,7 @@ float RHL = SETPOINT+STD_ERR;
 // Gain
 #define GAIN 0.9
 // delay after upset in ms
-#define UPSET_DELAY 20000
+#define UPSET_DELAY 10000
 // %wt of the salt in the salty container
 #define PWT_SALT = 0.25
 // flow rate in liters per second
@@ -48,7 +48,7 @@ void setup()
 
     lcd.begin(20, 4);
     Serial.begin(115200);
-
+    Serial.println("INIT");
     initLCD();
 
     delay(1000);
