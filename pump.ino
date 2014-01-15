@@ -31,8 +31,8 @@ int ss = 9;
 // solenoid di
 int sdi = 8;
 
-bool saltyState = false;
-bool diState = false;
+volatile bool saltyState = false;
+volatile bool diState = false;
 float salinity = 0;
 
 
@@ -45,20 +45,13 @@ void setup()
     pinMode(salinity_pin, INPUT);
     pinMode(ss, OUTPUT);
     pinMode(sdi, OUTPUT);
-    pinMode(2, OUTPUT);
-    pinMode(3, OUTPUT);
-    pinMode(4, OUTPUT);
-    pinMode(5, OUTPUT);
-    pinMode(6, OUTPUT);
-    pinMode(7, OUTPUT);
-    pinMode(10, OUTPUT);
 
     lcd.begin(20, 4);
     Serial.begin(115200);
 
     initLCD();
 
-    delay(5000);
+    delay(1000);
 
 }
 
@@ -228,24 +221,24 @@ void initLCD()
 
 void updateLCD()
 {
-    delay(500);
+    // Serial.println("UPDATING salty state HERE");
     // salty valve state
     lcd.setCursor(1,2);
-    lcd.print("   ");
-    lcd.setCursor(1,2);
-    lcd.print(saltyState?"ON":"OFF");
+    lcd.print(saltyState?"ON ":"OFF");
 
+    delay(1000);
+
+    // Serial.println("UPDATE salinity");
     // current salinity
-    lcd.setCursor(7,2);
-    lcd.print("     ");
     lcd.setCursor(7,2);
     lcd.print(salinity, 3);
 
+    delay(1000);
 
+    // Serial.println("UPDATE diState");
     // DI state
     lcd.setCursor(15,2);
-    lcd.print("   ");
-    lcd.setCursor(15,2);
-    lcd.print(diState?"ON":"OFF");
+    lcd.print(diState?"ON ":"OFF");
     delay(500);
+    // Serial.println("FINISHED UPDATING LCD");
 }
