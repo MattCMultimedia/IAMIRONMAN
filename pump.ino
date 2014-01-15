@@ -1,12 +1,12 @@
 #include <SoftwareSerial.h>
 #include <LiquidCrystal.h>
 
-#define SETPOINT (0.12)
-#define STD_ERR (46/1024)
+// #define SETPOINT (0.1200)
+// #define STD_ERR (46/1024)
 
-// LHL and RHL calculated as linear delta offset compared to setpoint
-#define LHL (SETPOINT-STD_ERR)
-#define RHL (SETPOINT+STD_ERR)
+// // LHL and RHL calculated as linear delta offset compared to setpoint
+// #define LHL (SETPOINT-STD_ERR)
+// #define RHL (SETPOINT+STD_ERR)
 
 // Gain
 #define GAIN 0.8
@@ -35,6 +35,15 @@ bool saltyState = false;
 bool diState = true;
 double salinity = 0;
 
+float SETPOINT = 0.12;
+float STD_ERR = 46/1024;
+
+float LHL = SETPOINT-STD_ERR;
+float RHL = SETPOINT+STD_ERR;
+
+
+
+
 void setup()
 {
 
@@ -56,39 +65,41 @@ void loop()
     // we want to check the salinity
     // if salinity is below LHL OR above RHL, correct it
 
-    salinity = analogToSalinity(getSalinity());
-    // Serial.println(salinity);
+    // salinity = analogToSalinity(getSalinity());
+    salinity = getSalinity();
+    Serial.println(salinity);
+    // delay(10);
 
-    if (salinity < LHL || salinity > RHL) {
+    // if (salinity < LHL || salinity > RHL) {
 
-        delay(UPSET_DELAY);
-        salinity = analogToSalinity(getSalinity());
+    //     delay(UPSET_DELAY);
+    //     salinity = analogToSalinity(getSalinity());
 
 
-        // salinity is in %wt
-        if (salinity < LHL) {
-            // needs salt
+    //     // salinity is in %wt
+    //     if (salinity < LHL) {
+    //         // needs salt
 
-            // calulate target using gain
-            target = (salinity + (salinity-SETPOINT)*GAIN);
+    //         // calulate target using gain
+    //         target = (salinity + (salinity-SETPOINT)*GAIN);
 
-            openSaltForSeconds(getSaltSecondsForSalinityAndSetpoint(salinity, target));
+    //         openSaltForSeconds(getSaltSecondsForSalinityAndSetpoint(salinity, target));
 
-        } else if (salinity > RHL) {
-            // needs DI water
+    //     } else if (salinity > RHL) {
+    //         // needs DI water
 
-            // calc target
-            target = (salinity - (salinity-SETPOINT)*GAIN);
+    //         // calc target
+    //         target = (salinity - (salinity-SETPOINT)*GAIN);
 
-            openDIForSeconds(getDISecondsForSalinityAndSetpoint(salinity, target));
+    //         openDIForSeconds(getDISecondsForSalinityAndSetpoint(salinity, target));
 
-        } else {
-            // eh. whatver, it fixed itself I guess.
-        }
+    //     } else {
+    //         // eh. whatver, it fixed itself I guess.
+    //     }
 
-    } else {
+    // } else {
 
-    }
+    // }
 
 }
 
@@ -99,7 +110,7 @@ double getSalinity()
 {
     // averages salinity over course of 2 seconds.
     float x = 0;
-    int samples = 10;
+    int samples = 2;
 
     for(int i=0; i<samples; i++){
         digitalWrite(salinity_trigger, HIGH);
@@ -172,7 +183,7 @@ void initLCD()
     lcd.print("OFF");
 
     lcd.setCursor(0,3);
-    lcd.print("SALTY CONCENTRATION  DI");
+    lcd.print("SALTY CURRENT  DI");
 
 }
 
