@@ -147,12 +147,12 @@ void openSaltForSeconds(float seconds)
 
 float salinityToAnalog(float s)
 {
-    return 22.9465601051 * log(s) + 197.0368452225;
+    return 85.0841365834 * log(s) + 757.7391914623;
 }
 
 float analogToSalinity(float a)
 {
-    return 0.7419333138 * log(a) - 3.6131359758;
+    return 0.5775389110 * log(a) - 3.5466300402;
 }
 
 float getSaltSecondsForSalinityAndSetpoint(double salinity, double target)
