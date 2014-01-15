@@ -31,16 +31,26 @@ int ss = 9;
 // solenoid di
 int sdi = 8;
 
+bool saltyState = false;
+bool diState = true;
+double salinity = 0;
 
 void setup()
 {
+
+    pinMode(salinity_trigger, OUTPUT);
+    pinMode(salinity_pin, INPUT);
+    pinMode(ss, OUTPUT);
+    pinMode(sdi, OUTPUT);
+
     lcd.begin(20, 4);
     Serial.begin(9600);
+
+    initLCD();
 }
 
 void loop()
 {
-    static double salinity;
     static double target;
     // for the main loop
     // we want to check the salinity
@@ -103,16 +113,20 @@ double getSalinity()
 
 void openDIForSeconds(float seconds)
 {
+    diState = true;
     digitalWrite(sdi, HIGH);
     delay(seconds*1000);
     digitalWrite(sdi, LOW);
+    diState = false;
 }
 
 void openSaltForSeconds(float seconds)
 {
+    saltyState = true;
     digitalWrite(ss, HIGH);
     delay(seconds*1000);
     digitalWrite(ss, LOW);
+    saltyState = false;
 }
 
 float salinityToAnalog(float s)
@@ -132,4 +146,54 @@ float getSaltSecondsForSalinityAndSetpoint(double salinity, double target)
 float getDISecondsForSalinityAndSetpoint(double salinity, double target)
 {
     // using equation developed in HW #7
+}
+
+void initLCD()
+{
+    lcd.setCursor(1,0);
+    lcd.print("LCL    SP     UCL");
+    lcd.setCursor(1,1);
+    lcd.print(LHL, 3);
+    lcd.setCursor(7,1);
+    lcd.print(SETPOINT, 3);
+    lcd.setCursor(14,1);
+    lcd.print(RHL, 3);
+
+    // salty valve state
+    lcd.setCursor(1,2);
+    lcd.print("OFF");
+
+    // current salinity
+    lcd.setCursor(7,2);
+    lcd.print("0.000");
+
+    // DI state
+    lcd.setCursor(15,2);
+    lcd.print("OFF");
+
+    lcd.setCursor(0,3);
+    lcd.print("SALTY CONCENTRATION  DI");
+
+}
+
+void updateLCD()
+{
+    // salty valve state
+    lcd.setCursor(1,2);
+    lcd.print("   ");
+    lcd.setCursor(1,2);
+    lcd.print(saltyState?"ON":"OFF");
+
+    // current salinity
+    lcd.setCursor(7,2);
+    lcd.print("     ");
+    lcd.setCursor(7,2);
+    lcd.print(sal, 3);
+
+
+    // DI state
+    lcd.setCursor(15,2);
+    lcd.print("   ");
+    lcd.setCursor(15,2);
+    lcd.print(diState?"ON":"OFF");
 }
