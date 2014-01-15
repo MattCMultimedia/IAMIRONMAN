@@ -188,7 +188,7 @@ void updateLCD()
     lcd.setCursor(7,2);
     lcd.print("     ");
     lcd.setCursor(7,2);
-    lcd.print(sal, 3);
+    lcd.print(salinity, 3);
 
 
     // DI state
