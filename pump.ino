@@ -22,6 +22,9 @@
 
 #define FLOW_RATE_S = 0.4266
 
+#define OFR 0
+#define MASS 0.073303037714
+
 
 // lcd
 LiquidCrystal lcd(2, 3, 4, 5, 6, 7, 10);
@@ -75,41 +78,41 @@ void loop()
     // test flow rate
 
 
-    // salinity = analogToSalinity(getSalinity());
+    salinity = analogToSalinity(getSalinity());
     // Serial.println(salinity);
     updateLCD();
     // delay(10);
 
-    // if (salinity < LHL || salinity > RHL) {
+    if (salinity < LHL || salinity > RHL) {
 
-    //     delay(UPSET_DELAY);
-    //     salinity = analogToSalinity(getSalinity());
+        delay(UPSET_DELAY);
+        salinity = analogToSalinity(getSalinity());
 
 
-    //     // salinity is in %wt
-    //     if (salinity < LHL) {
-    //         // needs salt
+        // salinity is in %wt
+        if (salinity < LHL) {
+            // needs salt
 
-    //         // calulate target using gain
-    //         target = (salinity + (salinity-SETPOINT)*GAIN);
+            // calulate target using gain
+            target = (salinity + (salinity-SETPOINT)*GAIN);
 
-    //         openSaltForSeconds(getSaltSecondsForSalinityAndSetpoint(salinity, target));
+            openSaltForSeconds(getSaltSecondsForSalinityAndSetpoint(salinity, target));
 
-    //     } else if (salinity > RHL) {
-    //         // needs DI water
+        } else if (salinity > RHL) {
+            // needs DI water
 
-    //         // calc target
-    //         target = (salinity - (salinity-SETPOINT)*GAIN);
+            // calc target
+            target = (salinity - (salinity-SETPOINT)*GAIN);
 
-    //         openDIForSeconds(getDISecondsForSalinityAndSetpoint(salinity, target));
+            openDIForSeconds(getDISecondsForSalinityAndSetpoint(salinity, target));
 
-    //     } else {
-    //         // eh. whatver, it fixed itself I guess.
-    //     }
+        } else {
+            // eh. whatver, it fixed itself I guess.
+        }
 
-    // } else {
+    } else {
 
-    // }
+    }
 
 }
 
@@ -167,10 +170,15 @@ float analogToSalinity(float a)
 float getSaltSecondsForSalinityAndSetpoint(double salinity, double target)
 {
     // using equation developed in HW #7
+    float m_needed = ((target-salinity)*MASS)/((1-OFR)*salinity);
+    return 60 * (m_needed/FLOW_RATE_S);
 }
 float getDISecondsForSalinityAndSetpoint(double salinity, double target)
 {
     // using equation developed in HW #7
+    // returns seconds
+    float m_needed = ((salinity-target)*MASS)/((1-OFR)*salinity);
+    return 60 * (m_neeeded/FLOW_RATE_DI);
 }
 
 void initLCD()
