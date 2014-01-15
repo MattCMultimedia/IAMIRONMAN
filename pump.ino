@@ -1,8 +1,8 @@
 #include <SoftwareSerial.h>
 #include <LiquidCrystal.h>
 
-// SETPOINT + LHL AND RHL
-float SETPOINT = 0.125;
+// SETPOINT + LHL AND RHL in %wt
+float SETPOINT = 0.09;
 float STD_ERR = 0.011;
 float LHL = SETPOINT-STD_ERR;
 float RHL = SETPOINT+STD_ERR;
@@ -27,7 +27,7 @@ float FLOW_RATE_S = 0.4266;
 // lcd
 LiquidCrystal lcd(2, 3, 4, 5, 6, 7, 10);
 // arduino-arduino communication on pins 11,12
-SoftwareSerial ironman(11,12);
+SoftwareSerial ironman(A5,A5);
 
 // pin that powers salinity sensor
 int salinity_trigger = 11;
@@ -53,11 +53,13 @@ void setup()
     pinMode(ss, OUTPUT);
     pinMode(sdi, OUTPUT);
 
+    pinMode(A5, OUTPUT);
+    pinMode(A4, OUTPUT);
+
     lcd.begin(20, 4);
     Serial.begin(115200);
 
     ironman.begin(4800);
-    ironman.println("idle");
 
 
     initLCD();
