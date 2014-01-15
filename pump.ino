@@ -125,19 +125,23 @@ double getSalinity()
 void openDIForSeconds(float seconds)
 {
     diState = true;
+    updateLCD();
     digitalWrite(sdi, HIGH);
     delay(seconds*1000);
     digitalWrite(sdi, LOW);
     diState = false;
+    updateLCD();
 }
 
 void openSaltForSeconds(float seconds)
 {
     saltyState = true;
+    updateLCD();
     digitalWrite(ss, HIGH);
     delay(seconds*1000);
     digitalWrite(ss, LOW);
     saltyState = false;
+    updateLCD();
 }
 
 float salinityToAnalog(float s)
