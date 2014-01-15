@@ -2,8 +2,8 @@
 #include <LiquidCrystal.h>
 
 // SETPOINT + LHL AND RHL
-float SETPOINT = 0.10;
-float STD_ERR = 46/1024;
+float SETPOINT = 0.125;
+float STD_ERR = 46.0/1024.0;
 float LHL = SETPOINT-STD_ERR;
 float RHL = SETPOINT+STD_ERR;
 
@@ -33,7 +33,7 @@ int sdi = 8;
 
 bool saltyState = false;
 bool diState = false;
-double salinity = 0;
+float salinity = 0;
 
 
 
@@ -50,6 +50,8 @@ void setup()
     Serial.begin(9600);
 
     initLCD();
+
+    delay(5000);
 
 }
 
@@ -73,7 +75,7 @@ void loop()
         Serial.println("UPSET SHIT");
         delay(UPSET_DELAY);
         salinity = analogToSalinity(getSalinity());
-        Serial.print("SALINITY: ");
+        Serial.print("NEW SALINITY: ");
         Serial.println(salinity, 4);
 
 
@@ -111,7 +113,7 @@ void loop()
 
 
 
-double getSalinity()
+float getSalinity()
 {
     // averages salinity over course of 2 seconds.
     float x = 0;
@@ -124,11 +126,13 @@ double getSalinity()
         digitalWrite(salinity_trigger, LOW);
         delay(100);
     }
-    return (double)(x/samples);
+    return (float)(x/samples);
 }
 
 void openDIForSeconds(float seconds)
 {
+    Serial.print("Opening DI for Seconds: ");
+    Serial.println(seconds, 5);
     diState = true;
     updateLCD();
     digitalWrite(sdi, HIGH);
@@ -140,6 +144,8 @@ void openDIForSeconds(float seconds)
 
 void openSaltForSeconds(float seconds)
 {
+    Serial.print("Opening Salt for Seconds: ");
+    Serial.println(seconds, 5);
     saltyState = true;
     updateLCD();
     digitalWrite(ss, HIGH);
