@@ -17,8 +17,10 @@ float RHL = SETPOINT+STD_ERR;
 float FLOW_RATE_DI = 0.408;
 float FLOW_RATE_S = 0.4266;
 #define OFR 0.15
+// MASS is in kg
 #define MASS 0.073303037714
 
+// in decimal AKA %/100
 #define SALT_SALINITY 0.01
 #define DI_SALINITY 0
 
