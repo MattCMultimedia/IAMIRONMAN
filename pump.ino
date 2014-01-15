@@ -68,6 +68,7 @@ void loop()
     // salinity = analogToSalinity(getSalinity());
     salinity = getSalinity();
     Serial.println(salinity);
+    updateLCD();
     // delay(10);
 
     // if (salinity < LHL || salinity > RHL) {
