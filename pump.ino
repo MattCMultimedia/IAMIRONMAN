@@ -26,6 +26,8 @@ float FLOW_RATE_S = 0.4266;
 
 // lcd
 LiquidCrystal lcd(2, 3, 4, 5, 6, 7, 10);
+// arduino-arduino communication on pins 11,12
+SoftwareSerial ironman(11,12);
 
 // pin that powers salinity sensor
 int salinity_trigger = 11;
@@ -53,6 +55,10 @@ void setup()
 
     lcd.begin(20, 4);
     Serial.begin(115200);
+
+    ironman.begin(4800);
+    ironman.println("idle");
+
 
     initLCD();
 
@@ -105,6 +111,8 @@ void loop()
             Serial.print("TARGET: ");
             Serial.println(target, 4);
 
+            arcReactor();
+
             openSaltForSeconds(getSaltSecondsForSetpoint(target));
 
         } else if (salinity > RHL) {
@@ -114,6 +122,8 @@ void loop()
             target = (salinity - (salinity-SETPOINT)*GAIN);
             Serial.print("TARGET: ");
             Serial.println(target, 4);
+
+            arcReactor();
 
             openDIForSeconds(getDISecondsForSetpoint(target));
 
@@ -240,4 +250,9 @@ void updateLCD()
     lcd.setCursor(15,2);
     lcd.print(diState?"ON ":"OFF");
 
+}
+
+void arcReactor()
+{
+    ironman.println("arc");
 }
