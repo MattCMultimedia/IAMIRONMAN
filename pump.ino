@@ -73,7 +73,15 @@ void loop()
 
     if (salinity < LHL || salinity > RHL) {
         Serial.println("UPSET SHIT");
-        delay(UPSET_DELAY);
+
+        // delay UPSET_DELAY
+        unsigned int prev = millis();
+        while (millis() - prev < UPSET_DELAY) {
+            salinity = analogToSalinity(getSalinity());
+            updateLCD();
+            delay(1000);
+        }
+
         salinity = analogToSalinity(getSalinity());
         Serial.print("NEW SALINITY: ");
         Serial.println(salinity, 4);
@@ -94,7 +102,7 @@ void loop()
             // needs DI water
 
             // calc target
-            target = (salinity - (salinity-SETPOINT)*GAIN);
+            target = (SETPOINT - (salinity-SETPOINT)*GAIN);
             Serial.print("TARGET: ");
             Serial.println(target, 4);
 
