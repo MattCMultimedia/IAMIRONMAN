@@ -32,7 +32,7 @@ int ss = 9;
 int sdi = 8;
 
 bool saltyState = false;
-bool diState = true;
+bool diState = false;
 double salinity = 0;
 
 
@@ -51,7 +51,6 @@ void setup()
 
     initLCD();
 
-    openSaltForSeconds(100);
 }
 
 void loop()
@@ -65,14 +64,17 @@ void loop()
 
 
     salinity = analogToSalinity(getSalinity());
-    // Serial.println(salinity);
+    Serial.print("SALINITY: ");
+    Serial.println(salinity, 4);
     updateLCD();
     // delay(10);
 
     if (salinity < LHL || salinity > RHL) {
-
+        Serial.println("UPSET SHIT");
         delay(UPSET_DELAY);
         salinity = analogToSalinity(getSalinity());
+        Serial.print("SALINITY: ");
+        Serial.println(salinity, 4);
 
 
         // salinity is in %wt
@@ -81,6 +83,8 @@ void loop()
 
             // calulate target using gain
             target = (salinity + (salinity-SETPOINT)*GAIN);
+            Serial.print("TARGET: ");
+            Serial.println(target, 4);
 
             openSaltForSeconds(getSaltSecondsForSetpoint(target));
 
@@ -89,6 +93,8 @@ void loop()
 
             // calc target
             target = (salinity - (salinity-SETPOINT)*GAIN);
+            Serial.print("TARGET: ");
+            Serial.println(target, 4);
 
             openDIForSeconds(getDISecondsForSetpoint(target));
 
