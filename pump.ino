@@ -21,13 +21,13 @@ float FLOW_RATE_S = 0.4266;
 #define MASS 0.073303037714
 
 // in decimal AKA %/100
-#define SALT_SALINITY 0.01
-#define DI_SALINITY 0
+float SALT_SALINITY = 0.01;
+int DI_SALINITY = 0;
 
 // lcd
 LiquidCrystal lcd(2, 3, 4, 5, 6, 7, 10);
 // arduino-arduino communication on pins 11,12
-SoftwareSerial ironman(A5,A5);
+// SoftwareSerial ironman(A5,A5);
 
 // pin that powers salinity sensor
 int salinity_trigger = 11;
@@ -59,7 +59,7 @@ void setup()
     lcd.begin(20, 4);
     Serial.begin(115200);
 
-    ironman.begin(4800);
+    // ironman.begin(4800);
 
 
     initLCD();
@@ -256,5 +256,5 @@ void updateLCD()
 
 void arcReactor()
 {
-    ironman.println("arc");
+    // ironman.println("arc");
 }
