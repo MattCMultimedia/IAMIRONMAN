@@ -1,30 +1,23 @@
 #include <SoftwareSerial.h>
 #include <LiquidCrystal.h>
 
-// #define SETPOINT (0.1200)
-// #define STD_ERR (46/1024)
-
-// // LHL and RHL calculated as linear delta offset compared to setpoint
-// #define LHL (SETPOINT-STD_ERR)
-// #define RHL (SETPOINT+STD_ERR)
+// SETPOINT + LHL AND RHL
+float SETPOINT = 0.10;
+float STD_ERR = 46/1024;
+float LHL = SETPOINT-STD_ERR;
+float RHL = SETPOINT+STD_ERR;
 
 // Gain
 #define GAIN 0.8
-
 // delay after upset in ms
 #define UPSET_DELAY 20000
-
 // %wt of the salt in the salty container
 #define PWT_SALT = 0.25
-
 // flow rate in liters per second
-#define FLOW_RATE_DI = 0.408
-
-#define FLOW_RATE_S = 0.4266
-
-#define OFR 0
+float FLOW_RATE_DI = 0.408;
+float FLOW_RATE_S = 0.4266;
+#define OFR 0.15
 #define MASS 0.073303037714
-
 
 // lcd
 LiquidCrystal lcd(2, 3, 4, 5, 6, 7, 10);
@@ -33,7 +26,6 @@ LiquidCrystal lcd(2, 3, 4, 5, 6, 7, 10);
 int salinity_trigger = 11;
 // analog pin that measures voltage drop over 10kOhm resistor
 int salinity_pin = A0;
-
 // soleniod salt
 int ss = 9;
 // solenoid di
@@ -42,12 +34,6 @@ int sdi = 8;
 bool saltyState = false;
 bool diState = true;
 double salinity = 0;
-
-float SETPOINT = 0.12;
-float STD_ERR = 46/1024;
-
-float LHL = SETPOINT-STD_ERR;
-float RHL = SETPOINT+STD_ERR;
 
 
 
@@ -96,7 +82,7 @@ void loop()
             // calulate target using gain
             target = (salinity + (salinity-SETPOINT)*GAIN);
 
-            openSaltForSeconds(getSaltSecondsForSalinityAndSetpoint(salinity, target));
+            openSaltForSeconds(getSaltSecondsForSetpoint(target));
 
         } else if (salinity > RHL) {
             // needs DI water
@@ -104,7 +90,7 @@ void loop()
             // calc target
             target = (salinity - (salinity-SETPOINT)*GAIN);
 
-            openDIForSeconds(getDISecondsForSalinityAndSetpoint(salinity, target));
+            openDIForSeconds(getDISecondsForSetpoint(target));
 
         } else {
             // eh. whatver, it fixed itself I guess.
@@ -167,18 +153,18 @@ float analogToSalinity(float a)
     return 0.5775389110 * log(a) - 3.5466300402;
 }
 
-float getSaltSecondsForSalinityAndSetpoint(double salinity, double target)
+float getSaltSecondsForSetpoint(double target)
 {
     // using equation developed in HW #7
-    float m_needed = ((target-salinity)*MASS)/((1-OFR)*salinity);
-    return 60 * (m_needed/FLOW_RATE_S);
+    float m_needed = ((target-salinity)*MASS)/((1.0-OFR)*salinity);
+    return (60.0 * (m_needed/FLOW_RATE_S));
 }
-float getDISecondsForSalinityAndSetpoint(double salinity, double target)
+float getDISecondsForSetpoint(double target)
 {
     // using equation developed in HW #7
     // returns seconds
-    float m_needed = ((salinity-target)*MASS)/((1-OFR)*salinity);
-    return 60 * (m_neeeded/FLOW_RATE_DI);
+    float m_needed = ((salinity-target)*MASS)/((1.0-OFR)*salinity);
+    return 60.0 * (m_needed/FLOW_RATE_DI);
 }
 
 void initLCD()
