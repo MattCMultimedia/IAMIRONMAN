@@ -22,6 +22,8 @@ float FLOW_RATE_S = 0.4266;
 // lcd
 LiquidCrystal lcd(2, 3, 4, 5, 6, 7, 10);
 
+SoftwareSerial ironman(A5, A4);
+
 // pin that powers salinity sensor
 int salinity_trigger = 11;
 // analog pin that measures voltage drop over 10kOhm resistor
@@ -46,9 +48,14 @@ void setup()
     pinMode(ss, OUTPUT);
     pinMode(sdi, OUTPUT);
 
+    // pinMode(A5, INPUT);
+    // pinMode(A4, OUTPUT);
+
     lcd.begin(20, 4);
     Serial.begin(115200);
     Serial.println("INIT");
+
+    ironman.begin(9600);
     initLCD();
 
     delay(1000);
@@ -100,6 +107,8 @@ void loop()
             Serial.print("TARGET: ");
             Serial.println(target, 4);
 
+            arcReactor();
+
             openSaltForSeconds(getSaltSecondsForSetpoint(target));
 
         } else if (salinity > RHL) {
@@ -109,6 +118,8 @@ void loop()
             target = (salinity - (salinity-SETPOINT)*GAIN);
             Serial.print("TARGET: ");
             Serial.println(target, 4);
+
+            arcReactor();
 
             openDIForSeconds(getDISecondsForSetpoint(target));
 
@@ -243,4 +254,9 @@ void updateLCD()
     lcd.print(diState?"ON ":"OFF");
     delay(500);
     // Serial.println("FINISHED UPDATING LCD");
+}
+
+void arcReactor()
+{
+    ironman.print("arc");
 }
