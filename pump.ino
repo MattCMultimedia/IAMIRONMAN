@@ -47,7 +47,7 @@ void setup()
     pinMode(sdi, OUTPUT);
 
     lcd.begin(20, 4);
-    Serial.begin(9600);
+    Serial.begin(115200);
 
     initLCD();
 
@@ -80,6 +80,8 @@ void loop()
         Serial.println("CHILLING FOR UPSET_DELAY");
         while (millis() - prev < UPSET_DELAY) {
             salinity = analogToSalinity(getSalinity());
+            Serial.print("SALINITY: ");
+            Serial.println(salinity, 4);
             updateLCD();
             delay(1000);
         }
