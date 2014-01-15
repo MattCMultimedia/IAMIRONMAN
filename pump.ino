@@ -3,7 +3,7 @@
 
 // SETPOINT + LHL AND RHL
 float SETPOINT = 0.125;
-float STD_ERR = 46.0/1024.0;
+float STD_ERR = 0.011;
 float LHL = SETPOINT-STD_ERR;
 float RHL = SETPOINT+STD_ERR;
 
@@ -68,6 +68,7 @@ void loop()
     salinity = analogToSalinity(getSalinity());
     Serial.print("SALINITY: ");
     Serial.println(salinity, 4);
+    // initLCD();
     updateLCD();
     // delay(10);
 
@@ -75,7 +76,8 @@ void loop()
         Serial.println("UPSET SHIT");
 
         // delay UPSET_DELAY
-        unsigned int prev = millis();
+        unsigned long prev = millis();
+        Serial.println("CHILLING FOR UPSET_DELAY");
         while (millis() - prev < UPSET_DELAY) {
             salinity = analogToSalinity(getSalinity());
             updateLCD();
@@ -92,7 +94,7 @@ void loop()
             // needs salt
 
             // calulate target using gain
-            target = (salinity + (salinity-SETPOINT)*GAIN);
+            target = (salinity + (SETPOINT-salinity)*GAIN);
             Serial.print("TARGET: ");
             Serial.println(target, 4);
 
@@ -102,7 +104,7 @@ void loop()
             // needs DI water
 
             // calc target
-            target = (SETPOINT - (salinity-SETPOINT)*GAIN);
+            target = (salinity - (salinity-SETPOINT)*GAIN);
             Serial.print("TARGET: ");
             Serial.println(target, 4);
 
@@ -124,7 +126,7 @@ void loop()
 float getSalinity()
 {
     // averages salinity over course of 2 seconds.
-    float x = 0;
+    float x = 0.0;
     int samples = 2;
 
     for(int i=0; i<samples; i++){
@@ -217,6 +219,7 @@ void initLCD()
 
 void updateLCD()
 {
+    delay(100);
     // salty valve state
     lcd.setCursor(1,2);
     lcd.print("   ");
@@ -235,4 +238,5 @@ void updateLCD()
     lcd.print("   ");
     lcd.setCursor(15,2);
     lcd.print(diState?"ON":"OFF");
+    delay(100);
 }
