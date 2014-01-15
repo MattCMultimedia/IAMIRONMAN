@@ -180,7 +180,7 @@ float analogToSalinity(float a)
 float getSaltSecondsForSetpoint(double target)
 {
     // using equation developed in HW #7
-    float m_needed = ((target-salinity)*MASS)/((1.0-OFR)*salinity);
+    float m_needed = ((salinity-target)*MASS)/((OFR-1.0)*(0.1-salinity));
     return (60.0 * (m_needed/FLOW_RATE_S));
 }
 float getDISecondsForSetpoint(double target)
