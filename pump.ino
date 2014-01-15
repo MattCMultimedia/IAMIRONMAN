@@ -17,6 +17,11 @@
 // %wt of the salt in the salty container
 #define PWT_SALT = 0.25
 
+// flow rate in liters per second
+#define FLOW_RATE_DI = 0.408
+
+#define FLOW_RATE_S = 0.4266
+
 
 // lcd
 LiquidCrystal lcd(2, 3, 4, 5, 6, 7, 10);
@@ -56,6 +61,8 @@ void setup()
     Serial.begin(9600);
 
     initLCD();
+
+    openSaltForSeconds(100);
 }
 
 void loop()
@@ -65,9 +72,11 @@ void loop()
     // we want to check the salinity
     // if salinity is below LHL OR above RHL, correct it
 
+    // test flow rate
+
+
     // salinity = analogToSalinity(getSalinity());
-    salinity = getSalinity();
-    Serial.println(salinity);
+    // Serial.println(salinity);
     updateLCD();
     // delay(10);
 
