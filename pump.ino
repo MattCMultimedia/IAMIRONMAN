@@ -118,11 +118,12 @@ void loop()
             openDIForSeconds(getDISecondsForSetpoint(target));
 
         } else {
-            // eh. whatver, it fixed itself I guess.
+            // fixed, carry on
         }
 
     } else {
-
+        // nothing wrong
+        // insert iron man idle code here
     }
 
 }
@@ -226,20 +227,17 @@ void initLCD()
 
 void updateLCD()
 {
+    delay(100);
     // salty valve state
     lcd.setCursor(1,2);
     lcd.print(saltyState?"ON ":"OFF");
-
-    delay(1000);
 
     // current salinity
     lcd.setCursor(7,2);
     lcd.print(salinity, 3);
 
-    delay(1000);
-
     // DI state
     lcd.setCursor(15,2);
     lcd.print(diState?"ON ":"OFF");
-    delay(500);
+
 }
